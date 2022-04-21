@@ -6,7 +6,7 @@ set -e
 
 BUILD_DEVICE=yes
 BUILD_SIMULATOR=yes
-BUILD_FRAMEWORK=no
+BUILD_FRAMEWORK=yes
 SDK_VERSION=`xcrun --sdk iphoneos --show-sdk-version`
 SDK_MIN=9.0
 VERBOSE=no
@@ -17,7 +17,7 @@ SKIPLIBVLCCOMPILATION=no
 TVOS=no
 MACOS=no
 IOS=yes
-BITCODE=no
+BITCODE=yes
 OSVERSIONMINCFLAG=iphoneos
 OSVERSIONMINLDFLAG=ios
 ROOT_DIR=empty
@@ -109,9 +109,9 @@ buildxcodeproj()
         fi
         if [ "$IOS" = "yes" ]; then
             if [ "$PLATFORM" = "iphonesimulator" ]; then
-                architectures="i386 x86_64 arm64"
+                architectures="x86_64 arm64"
             else
-                architectures="armv7 arm64"
+                architectures="arm64"
             fi
         fi
         if [ "$MACOS" = "yes" ]; then
@@ -215,11 +215,9 @@ buildMobileKit() {
             fi
             if [ "$IOS" = "yes" ]; then
                 if [ "$PLATFORM" = "iphonesimulator" ]; then
-                    buildLibVLC "i386" $PLATFORM
                     buildLibVLC "x86_64" $PLATFORM
                     buildLibVLC "aarch64" $PLATFORM
                 else
-                    buildLibVLC "armv7" $PLATFORM
                     buildLibVLC "aarch64" $PLATFORM
                 fi
             fi
@@ -285,11 +283,6 @@ build_simulator_static_lib() {
         VLCSTATICMODULELIST="${VLCROOT}/build-${OSSTYLE}simulator-x86_64/static-lib/static-module-list.c"
         cp $VLCSTATICMODULELIST $PROJECT_DIR/Headers/Internal/vlc-plugins-$OSSTYLE-simulator-x86_64.h
     fi
-    if [ -d ${VLCROOT}/build-${OSSTYLE}simulator-i386 ];then
-        VLCSTATICLIBS+=" ${VLCROOT}/build-${OSSTYLE}simulator-i386/${VLCSTATICLIBRARYNAME}"
-        VLCSTATICMODULELIST="${VLCROOT}/build-${OSSTYLE}simulator-i386/static-lib/static-module-list.c"
-        cp $VLCSTATICMODULELIST $PROJECT_DIR/Headers/Internal/vlc-plugins-$OSSTYLE-simulator-i386.h
-    fi
     if [ -d ${VLCROOT}/build-${OSSTYLE}simulator-arm64 ];then
         VLCSTATICLIBS+=" ${VLCROOT}/build-${OSSTYLE}simulator-arm64/${VLCSTATICLIBRARYNAME}"
         VLCSTATICMODULELIST="${VLCROOT}/build-${OSSTYLE}simulator-arm64/static-lib/static-module-list.c"
@@ -328,11 +321,7 @@ build_device_static_lib() {
         VLCSTATICMODULELIST="${VLCROOT}/build-${OSSTYLE}os-arm64/static-lib/static-module-list.c"
         cp $VLCSTATICMODULELIST $PROJECT_DIR/Headers/Internal/vlc-plugins-$OSSTYLE-device-arm64.h
     fi
-    if [ -d ${VLCROOT}/build-${OSSTYLE}os-armv7 ];then
-        VLCSTATICLIBS+=" ${VLCROOT}/build-${OSSTYLE}os-armv7/${VLCSTATICLIBRARYNAME}"
-        VLCSTATICMODULELIST="${VLCROOT}/build-${OSSTYLE}os-armv7/static-lib/static-module-list.c"
-        cp $VLCSTATICMODULELIST $PROJECT_DIR/Headers/Internal/vlc-plugins-$OSSTYLE-device-armv7.h
-    fi
+
     if [ -d ${VLCROOT}/build-${OSSTYLE}-x86_64 ];then
         VLCSTATICLIBS+=" ${VLCROOT}/build-${OSSTYLE}-x86_64/${VLCSTATICLIBRARYNAME}"
         VLCSTATICMODULELIST="${VLCROOT}/build-${OSSTYLE}-x86_64/static-lib/static-module-list.c"
@@ -497,6 +486,37 @@ if [ "$SKIPLIBVLCCOMPILATION" != "yes" ]; then
     ./bootstrap
     make
     make .buildgas
+    ./configure 
+–enable-release 
+-disable-harfbuzz
+–disable-skins2 
+–disable-wxwidgets 
+–enable-mozilla 
+–with-mozilla-sdk-path=./gecko-sdk 
+–disable-sout 
+–disable-httpd 
+–enable-live555 
+–disable-dvdnav 
+–disable-libcdio 
+–disable-libcddb 
+–disable-cdda 
+–disable-vcd 
+–disable-dvdread 
+–disable-smb 
+–disable-cmml 
+–disable-alsa 
+–disable-opengl 
+–disable-png 
+–disable-screen 
+–disable-mkv 
+–disable-mod 
+–disable-mpc 
+–disable-libtar 
+–disable-speex 
+–disable-visual 
+–disable-daap 
+–disable-bonjour 
+–disable-gnutls 
     spopd #${VLCROOT}/extras/tools
 fi
 
