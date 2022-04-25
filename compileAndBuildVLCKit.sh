@@ -11,7 +11,7 @@ SDK_VERSION=`xcrun --sdk iphoneos --show-sdk-version`
 SDK_MIN=9.0
 VERBOSE=no
 DISABLEDEBUG=no
-CONFIGURATION="Debug"
+CONFIGURATION="Release"
 NONETWORK=no
 SKIPLIBVLCCOMPILATION=no
 TVOS=no
@@ -486,37 +486,6 @@ if [ "$SKIPLIBVLCCOMPILATION" != "yes" ]; then
     ./bootstrap
     make
     make .buildgas
-    ./configure 
-–enable-release 
--disable-harfbuzz
-–disable-skins2 
-–disable-wxwidgets 
-–enable-mozilla 
-–with-mozilla-sdk-path=./gecko-sdk 
-–disable-sout 
-–disable-httpd 
-–enable-live555 
-–disable-dvdnav 
-–disable-libcdio 
-–disable-libcddb 
-–disable-cdda 
-–disable-vcd 
-–disable-dvdread 
-–disable-smb 
-–disable-cmml 
-–disable-alsa 
-–disable-opengl 
-–disable-png 
-–disable-screen 
-–disable-mkv 
-–disable-mod 
-–disable-mpc 
-–disable-libtar 
-–disable-speex 
-–disable-visual 
-–disable-daap 
-–disable-bonjour 
-–disable-gnutls 
     spopd #${VLCROOT}/extras/tools
 fi
 
